@@ -3,6 +3,17 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState, type ReactNode } from "react";
 
+// Promise única no módulo: o StrictMode monta os efeitos duas vezes em dev
+// e o MSW não aceita um segundo worker.start().
+let mswStart: Promise<unknown> | null = null;
+
+function startMsw(): Promise<unknown> {
+  mswStart ??= import("@/mocks/browser").then(({ worker }) =>
+    worker.start({ onUnhandledRequest: "bypass" }),
+  );
+  return mswStart;
+}
+
 /**
  * Em desenvolvimento, segura a renderização até o service worker do MSW
  * estar ativo — evita que as primeiras queries escapem do mock.
@@ -14,11 +25,9 @@ function useMswReady(): boolean {
     if (ready) return;
     let active = true;
 
-    import("@/mocks/browser")
-      .then(({ worker }) => worker.start({ onUnhandledRequest: "bypass" }))
-      .then(() => {
-        if (active) setReady(true);
-      });
+    startMsw().then(() => {
+      if (active) setReady(true);
+    });
 
     return () => {
       active = false;
