@@ -1,8 +1,9 @@
 "use client";
 
-import { BoletoIcon, PixIcon } from "@/components/icons";
+import { Barcode } from "lucide-react";
 import type { PaymentMethod } from "@/lib/api-types";
 import { PaymentOption } from "./payment-option";
+import { PixIcon } from "./pix-icon";
 
 interface PaymentMethodSelectorProps {
   value: PaymentMethod;
@@ -31,7 +32,7 @@ export function PaymentMethodSelector({
           value="boleto"
           title="Boleto"
           description="Vencimento em 3 dias úteis"
-          icon={BoletoIcon}
+          icon={Barcode}
           checked={value === "boleto"}
           onChange={() => onChange("boleto")}
         />

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { CheckCircleIcon } from "@/components/icons";
+import { CircleCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SuccessDialogProps {
@@ -31,7 +31,10 @@ export function SuccessDialog({ orderId }: SuccessDialogProps) {
       className="w-[calc(100%-2rem)] max-w-sm rounded-2xl p-0 shadow-xl backdrop:bg-slate-900/50"
     >
       <div className="p-6 text-center">
-        <CheckCircleIcon className="mx-auto h-12 w-12 text-primary" />
+        <CircleCheck
+          aria-hidden="true"
+          className="mx-auto h-12 w-12 text-primary"
+        />
         <h2
           id="checkout-success-title"
           className="mt-3 text-lg font-bold text-slate-900"

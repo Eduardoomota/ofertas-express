@@ -1,7 +1,7 @@
 "use client";
 
+import { FileText, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { FileIcon, TrashIcon } from "@/components/icons";
 import type { Offer } from "@/lib/api-types";
 import { formatBRL } from "@/lib/format";
 
@@ -54,7 +54,7 @@ export function CartItemRow({ item, onRemove }: CartItemRowProps) {
         aria-hidden="true"
         className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primary-tint/60 text-primary"
       >
-        <FileIcon className="h-5 w-5" />
+        <FileText aria-hidden="true" className="h-5 w-5" />
       </span>
       <div className="min-w-0 flex-1">
         <p className="truncate font-semibold text-slate-900">{item.title}</p>
@@ -70,7 +70,7 @@ export function CartItemRow({ item, onRemove }: CartItemRowProps) {
         disabled={isLeaving}
         className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-slate-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50 motion-reduce:transition-none"
       >
-        <TrashIcon className="h-5 w-5" />
+        <Trash2 aria-hidden="true" className="h-5 w-5" />
       </button>
     </li>
   );

@@ -1,5 +1,5 @@
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { ArrowLeftIcon } from "./icons";
 
 interface PageHeaderProps {
   title: string;
@@ -23,7 +23,7 @@ export function PageHeader({
             aria-label={backLabel}
             className="-ml-3 grid h-11 w-11 place-items-center rounded-xl text-slate-600 transition-colors hover:bg-slate-200/60 motion-reduce:transition-none"
           >
-            <ArrowLeftIcon className="h-5 w-5" />
+            <ArrowLeft aria-hidden="true" className="h-5 w-5" />
           </Link>
         )}
         <h1 className="text-xl font-bold text-slate-900">{title}</h1>

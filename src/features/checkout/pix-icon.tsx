@@ -1,6 +1,6 @@
-import type { IconProps } from "./decorative";
+import type { SVGProps } from "react";
 
-export function PixIcon(props: IconProps) {
+export function PixIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

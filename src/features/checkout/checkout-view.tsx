@@ -1,7 +1,7 @@
 "use client";
 
+import { CalendarCheck, CircleDollarSign } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { CalendarCheckIcon, CoinsIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { useCartItems, useTotalAmount } from "@/features/cart/cart-store";
@@ -62,12 +62,12 @@ export function CheckoutView() {
 
       <div className="flex flex-col gap-3">
         <SummaryRow
-          icon={CalendarCheckIcon}
+          icon={CalendarCheck}
           label="Ofertas selecionadas"
           value={String(summaryCount)}
         />
         <SummaryRow
-          icon={CoinsIcon}
+          icon={CircleDollarSign}
           label="Total do acordo"
           value={formatBRL(summaryTotal)}
         />

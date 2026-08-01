@@ -43,7 +43,7 @@ Aprofundamento e trade-offs: [`docs/DECISIONS.md`](docs/DECISIONS.md).
 ```
 src/
   app/        # rotas (/, /cart, /checkout) + providers
-  components/ # layout/ (AppShell, Sidebar…), ui/, icons/ (lucide + Pix custom) — 1 componente por arquivo
+  components/ # layout/ (AppShell, Sidebar…) e ui/ — 1 componente por arquivo; ícones via lucide-react
   features/   # offers/ · cart/ · checkout/ (componentes, hooks e store por domínio)
   lib/        # contrato da API, fetchers, formatação BRL
   mocks/      # handlers MSW compartilhados

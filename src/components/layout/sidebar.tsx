@@ -1,14 +1,8 @@
 "use client";
 
+import { Clock, LogOut, ShoppingCart, Tag, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  CartIcon,
-  ClockIcon,
-  LogOutIcon,
-  TagIcon,
-  UserIcon,
-} from "@/components/icons";
 import { Brand } from "./brand";
 import { CartBadge } from "./cart-badge";
 import { cartLabel } from "./cart-label";
@@ -17,13 +11,13 @@ export function Sidebar({ totalItems }: { totalItems: number }) {
   const pathname = usePathname();
 
   const links = [
-    { href: "/", label: "Ofertas", icon: TagIcon, badge: false },
-    { href: "/cart", label: "Carrinho", icon: CartIcon, badge: true },
+    { href: "/", label: "Ofertas", icon: Tag, badge: false },
+    { href: "/cart", label: "Carrinho", icon: ShoppingCart, badge: true },
   ];
 
   const placeholders = [
-    { label: "Histórico", icon: ClockIcon },
-    { label: "Perfil", icon: UserIcon },
+    { label: "Histórico", icon: Clock },
+    { label: "Perfil", icon: User },
   ];
 
   return (
@@ -47,7 +41,7 @@ export function Sidebar({ totalItems }: { totalItems: number }) {
                       : "text-slate-600 hover:bg-slate-100"
                   }`}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon aria-hidden="true" className="h-5 w-5" />
                   <span className="flex-1">{label}</span>
                   {badge && <CartBadge totalItems={totalItems} />}
                 </Link>
@@ -57,7 +51,7 @@ export function Sidebar({ totalItems }: { totalItems: number }) {
           {placeholders.map(({ label, icon: Icon }) => (
             <li key={label}>
               <span className="flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400">
-                <Icon className="h-5 w-5" />
+                <Icon aria-hidden="true" className="h-5 w-5" />
                 {label}
               </span>
             </li>
@@ -66,7 +60,7 @@ export function Sidebar({ totalItems }: { totalItems: number }) {
       </nav>
       <div className="border-t border-slate-200 px-6 py-4">
         <span className="flex items-center gap-3 text-sm font-medium text-slate-400">
-          <LogOutIcon className="h-5 w-5" />
+          <LogOut aria-hidden="true" className="h-5 w-5" />
           Sair
         </span>
       </div>
