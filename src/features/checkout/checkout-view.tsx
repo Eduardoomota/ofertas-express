@@ -164,8 +164,8 @@ export function CheckoutView() {
                 Não foi possível concluir o acordo
               </p>
               <p className="mt-0.5 text-sm text-red-700">
-                Nossos servidores estão instáveis. Suas ofertas continuam aqui —
-                tente novamente em instantes.
+                Estamos enfrentando uma instabilidade temporária. Suas ofertas
+                estão seguras. Tente novamente em alguns instantes.
               </p>
             </div>
           )}
