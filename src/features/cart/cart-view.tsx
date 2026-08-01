@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { FileIcon, TrashIcon } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { Button, buttonClasses } from "@/components/ui/button";
 import { formatBRL } from "@/lib/format";
+import { CartItemRow } from "./cart-item-row";
 import { useCartItems, useCartStore, useTotalAmount } from "./cart-store";
 
 export function CartView() {
@@ -40,34 +40,7 @@ export function CartView() {
         <>
           <ul className="flex flex-col gap-3">
             {items.map((item) => (
-              <li
-                key={item.id}
-                className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-              >
-                <span
-                  aria-hidden="true"
-                  className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primary-tint/60 text-primary"
-                >
-                  <FileIcon className="h-5 w-5" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold text-slate-900">
-                    {item.title}
-                  </p>
-                  <p className="text-xs text-slate-500">Oferta</p>
-                  <p className="text-sm font-bold text-primary">
-                    {formatBRL(item.offerAmount)}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  aria-label={`Remover ${item.title} do carrinho`}
-                  onClick={() => removeItem(item.id)}
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-slate-500 transition-colors hover:bg-red-50 hover:text-red-600 motion-reduce:transition-none"
-                >
-                  <TrashIcon className="h-5 w-5" />
-                </button>
-              </li>
+              <CartItemRow key={item.id} item={item} onRemove={removeItem} />
             ))}
           </ul>
 

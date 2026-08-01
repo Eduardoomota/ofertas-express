@@ -13,6 +13,20 @@ const config: Config = {
         },
         surface: "#F5F7F7",
       },
+      keyframes: {
+        "cart-in": {
+          from: { opacity: "0", transform: "translateY(8px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "cart-out": {
+          from: { opacity: "1", transform: "translateY(0)" },
+          to: { opacity: "0", transform: "translateY(-8px)" },
+        },
+      },
+      animation: {
+        "cart-in": "cart-in 180ms ease-out",
+        "cart-out": "cart-out 160ms ease-in forwards",
+      },
     },
   },
   plugins: [],
