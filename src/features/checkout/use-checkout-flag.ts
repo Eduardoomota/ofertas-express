@@ -6,13 +6,14 @@ import { getFeatureFlags } from "@/lib/api";
  * payload inválido), o checkout segue silenciosamente com a flag desligada.
  * Enquanto a flag carrega também tratamos como OFF para não piscar o fluxo V2.
  */
-export function useCheckoutFlag(): { checkoutV2: boolean } {
-  const { data } = useQuery({
+export function useCheckoutFlag(): { checkoutV2: boolean; isLoading: boolean } {
+  const { data, isPending } = useQuery({
     queryKey: ["feature-flags"],
     queryFn: getFeatureFlags,
     retry: false,
     staleTime: 5 * 60_000,
   });
 
-  return { checkoutV2: data?.checkoutV2 ?? false };
+  // isPending vira false também no erro (retry off), liberando o fluxo curto.
+  return { checkoutV2: data?.checkoutV2 ?? false, isLoading: isPending };
 }
