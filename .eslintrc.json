@@ -1,5 +1,18 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript", "prettier"],
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "lucide-react",
+            "message": "Importe ícones de @/components/icons — a camada aplica aria-hidden e isola a lib."
+          }
+        ]
+      }
+    ]
+  },
   "overrides": [
     {
       "files": ["**/*.d.ts"],
@@ -7,6 +20,12 @@
         "@typescript-eslint/no-empty-object-type": "off",
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["src/components/icons/**"],
+      "rules": {
+        "no-restricted-imports": "off"
       }
     }
   ]
