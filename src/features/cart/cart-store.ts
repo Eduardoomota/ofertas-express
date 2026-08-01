@@ -1,5 +1,9 @@
+import { useEffect } from "react";
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 import type { Offer } from "@/lib/api-types";
+
+export const CART_STORAGE_KEY = "ofertas-express-cart";
 
 interface CartState {
   items: Offer[];
@@ -10,31 +14,57 @@ interface CartState {
   clear: () => void;
 }
 
-export const useCartStore = create<CartState>()((set) => ({
-  items: [],
-  announcement: "",
+export const useCartStore = create<CartState>()(
+  persist(
+    (set) => ({
+      items: [],
+      announcement: "",
 
-  addItem: (offer) =>
-    set((state) => {
-      if (state.items.some((item) => item.id === offer.id)) return state;
-      return {
-        items: [...state.items, offer],
-        announcement: `${offer.title} adicionado ao carrinho`,
-      };
+      addItem: (offer) =>
+        set((state) => {
+          if (state.items.some((item) => item.id === offer.id)) return state;
+          return {
+            items: [...state.items, offer],
+            announcement: `${offer.title} adicionado ao carrinho`,
+          };
+        }),
+
+      removeItem: (id) =>
+        set((state) => {
+          const removed = state.items.find((item) => item.id === id);
+          if (!removed) return state;
+          return {
+            items: state.items.filter((item) => item.id !== id),
+            announcement: `${removed.title} removido do carrinho`,
+          };
+        }),
+
+      clear: () => set({ items: [], announcement: "" }),
     }),
+    {
+      name: CART_STORAGE_KEY,
+      version: 1,
+      storage: createJSONStorage(() => localStorage),
+      // Só os itens vão para o storage; announcement é efêmero.
+      partialize: (state) => ({ items: state.items }),
+      // Estado de versão desconhecida é descartado em vez de quebrar o app.
+      migrate: () => ({ items: [] }),
+      // O server renderiza o carrinho vazio; reidratar só após montar
+      // (useRehydrateCart) evita mismatch de hidratação no SSR.
+      skipHydration: true,
+    },
+  ),
+);
 
-  removeItem: (id) =>
-    set((state) => {
-      const removed = state.items.find((item) => item.id === id);
-      if (!removed) return state;
-      return {
-        items: state.items.filter((item) => item.id !== id),
-        announcement: `${removed.title} removido do carrinho`,
-      };
-    }),
-
-  clear: () => set({ items: [], announcement: "" }),
-}));
+/**
+ * Reidrata o carrinho do localStorage após a montagem no cliente.
+ * Consumido pelo AppShell — o layout não conhece detalhes de persistência.
+ */
+export function useRehydrateCart(): void {
+  useEffect(() => {
+    void useCartStore.persist.rehydrate();
+  }, []);
+}
 
 // Selectors: cada componente assina só a fatia que usa, evitando re-renders.
 export const useCartItems = () => useCartStore((state) => state.items);

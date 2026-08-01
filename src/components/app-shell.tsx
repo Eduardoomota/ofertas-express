@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { useCartAnnouncement, useTotalItems } from "@/features/cart/cart-store";
+import {
+  useCartAnnouncement,
+  useRehydrateCart,
+  useTotalItems,
+} from "@/features/cart/cart-store";
 import { CartIcon, ClockIcon, LogOutIcon, TagIcon, UserIcon } from "./icons";
 
 function cartLabel(totalItems: number): string {
@@ -119,6 +123,7 @@ function Sidebar({ totalItems }: { totalItems: number }) {
 export function AppShell({ children }: { children: ReactNode }) {
   const totalItems = useTotalItems();
   const announcement = useCartAnnouncement();
+  useRehydrateCart();
 
   return (
     <div className="min-h-dvh lg:flex">
@@ -136,11 +141,11 @@ export function AppShell({ children }: { children: ReactNode }) {
           className="mx-auto w-full max-w-[680px] flex-1 px-4 py-6 lg:px-8 lg:py-10"
         >
           {children}
+          <p role="status" aria-live="polite" className="sr-only">
+            {announcement}
+          </p>
         </main>
       </div>
-      <p role="status" aria-live="polite" className="sr-only">
-        {announcement}
-      </p>
     </div>
   );
 }

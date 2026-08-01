@@ -2,7 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
-import { useCartStore } from "@/features/cart/cart-store";
+import { CART_STORAGE_KEY, useCartStore } from "@/features/cart/cart-store";
 import type { FeatureFlags } from "@/lib/api-types";
 import { offersFixture } from "@/mocks/handlers";
 import { server } from "@/mocks/server";
@@ -53,7 +53,7 @@ describe("Ofertas Express", () => {
     expect(
       await screen.findByRole("heading", { name: "Confirmar acordo" }),
     ).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Confirmar" }));
+    await user.click(await screen.findByRole("button", { name: "Confirmar" }));
 
     // Feedback de sucesso e carrinho limpo
     expect(
@@ -124,5 +124,34 @@ describe("Ofertas Express", () => {
     ).toBeInTheDocument();
     expect(useCartStore.getState().items).toHaveLength(2);
     expect(screen.getByRole("button", { name: "Confirmar" })).toBeEnabled();
+  });
+
+  it("persiste o carrinho entre visitas (hidratação do localStorage)", async () => {
+    const user = userEvent.setup();
+    const { unmount } = renderApp("/");
+
+    await user.click(
+      await screen.findByRole("button", {
+        name: "Adicionar ao carrinho — Negocie agora",
+      }),
+    );
+    unmount();
+
+    // jsdom não recarrega módulos, então "novo pageload" é simulado zerando a
+    // store em memória. Como o setState também passa pelo persist, o snapshot
+    // do storage é preservado antes e restaurado em seguida.
+    const stored = window.localStorage.getItem(CART_STORAGE_KEY);
+    useCartStore.setState({ items: [] });
+    if (stored) window.localStorage.setItem(CART_STORAGE_KEY, stored);
+
+    renderApp("/carrinho");
+
+    // O AppShell reidrata do localStorage ao montar (useRehydrateCart).
+    expect(await screen.findByText("Negocie agora")).toBeInTheDocument();
+    // Valor aparece no item e na linha de Total.
+    expect(screen.getAllByText("R$ 980,00")).toHaveLength(2);
+    expect(
+      screen.getByRole("button", { name: "Remover Negocie agora do carrinho" }),
+    ).toBeInTheDocument();
   });
 });
