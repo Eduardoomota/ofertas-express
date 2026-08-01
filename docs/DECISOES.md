@@ -26,7 +26,7 @@ Reprodução: `NEXT_PUBLIC_CHECKOUT_V2=error` em dev, ou o teste que completa o 
 - O carrinho é limpo **no `onSuccess` da mutation — nunca no erro**: o requisito "não limpar em erro" vale por construção.
 - **Erro 500:** `role="alert"` + foco movido programaticamente para o alerta (`tabIndex={-1}` + `focus()`); estado preservado, retry habilitado.
 - **Sucesso:** `<dialog>` nativo com `showModal()` — focus trap, `Esc` e `aria-modal` de graça. Renderizado condicionalmente para simplificar o ciclo de vida e evitar falso-positivo em teste (dialog fechado no jsdom é "visível" para queries).
-- Após o sucesso o resumo é lido de `mutation.variables` (o payload confirmado) — o carrinho já foi limpo e mostraria zeros.
+- **Payload leva só IDs** (`{ itemIds, paymentMethod }`); o servidor resolve os itens no catálogo e devolve `totalAmount` recalculado. Após o sucesso, a contagem vem de `mutation.variables.itemIds` e o total exibido é o **autoritativo do response** — o carrinho já foi limpo e mostraria zeros.
 
 ## 5. Persistência do carrinho
 
@@ -43,6 +43,7 @@ persist(creator, {
 - **`skipHydration` + reidratação pós-mount** (`useRehydrateCart`, consumido pelo AppShell): sem isso, o persist reidrata na criação da store, o primeiro render do cliente vem com itens e o HTML do servidor veio vazio → hydration mismatch. Com isso, servidor e cliente renderizam iguais e o badge atualiza um frame depois.
 - **`version` + `migrate`** desde o dia 1: storage de formato desconhecido é descartado (perder um carrinho é barato; crashar não é).
 - **`partialize`** mantém o `announcement` do aria-live fora do storage — persistir "X removido" e re-anunciar no próximo pageload seria um bug de a11y.
+- **`merge` sanitiza toda reidratação** (`normalizeCartItems`): o localStorage é input externo tanto quanto uma API — item adulterado/corrompido (preço não numérico, sem `id`) é descartado; os válidos sobrevivem. `migrate` não basta: só roda em mismatch de versão.
 - Fora de escopo consciente: sync multi-tab via evento `storage`.
 
 ## 6. MSW
@@ -84,3 +85,12 @@ Comportamento, não implementação: queries por role/label, `userEvent`. O harn
 | Harness com contextos do Next      | `vi.mock("next/navigation")` | Navegação real nos testes                                             |
 | `migrate` descarta carrinho antigo | Migração de schema           | Carrinho é estado barato; migração não se paga                        |
 | Itens decorativos não interativos  | Links `href="#"`             | Link morto engana teclado e leitor de tela                            |
+| Carrinho client-side               | "Carrinho no MSW"            | MSW roda no mesmo realm do cliente — não é fronteira de segurança     |
+
+## 11. Fronteira de confiança (carrinho × localStorage × MSW)
+
+Por que o carrinho vive no cliente e isso não é vulnerabilidade de dados:
+
+- **Confidencialidade:** o storage guarda só a seleção de itens do **catálogo público** (os mesmos que `GET /api/offers` entrega a qualquer um) — zero PII, token ou segredo. Carrinho de convidado em storage local é o padrão da indústria na ausência de login (que o desafio exclui).
+- **MSW não é servidor.** É um service worker no mesmo navegador, mesmo processo e mesmo realm JS do usuário — um "carrinho no MSW" seria igualmente manipulável pelo DevTools, com persistência pior (memória de módulo morre no reload). Movê-lo para lá seria teatro de segurança.
+- **A ameaça real é de integridade, e a defesa fica onde deve:** todo dado do cliente é controlável pelo usuário. Por isso (a) a reidratação **valida o shape** do storage (`normalizeCartItems` — seção 5) e (b) o checkout envia **só IDs** e o servidor recalcula preços do catálogo, ignorando qualquer valor do cliente (anti price-tampering — seção 4). Dois testes cobrem exatamente esses cenários: storage adulterado degradando sem crash, e preço adulterado sendo substituído pelo total autoritativo do servidor no acordo confirmado.

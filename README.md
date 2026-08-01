@@ -32,9 +32,9 @@ Para ver o erro 500 do checkout, marque **"Simular falha da API"** na própria t
 
 - **Zustand no carrinho** — estado global _do cliente_: síncrono, sem cache/refetch. Selectors granulares evitam re-renders. **React Query nas ofertas, flag e checkout** — são _server state_: cache, loading/erro prontos, retry configurável e mutation com `isPending`.
 - **Fallback seguro da flag** — `retry: false`, payload inválido normalizado para `false` e default OFF em qualquer erro: a tela nunca quebra, o fluxo antigo assume silenciosamente.
-- **App Router** com páginas server finas delegando para features client; **Tailwind** para reproduzir o mockup com tokens teal; **MSW** com handlers únicos para dev (browser) e testes (node).
+- **App Router** com páginas server finas delegando para features client; **Tailwind** para reproduzir o mockup com tokens teal; **MSW** com handlers únicos para dev (browser) e testes (node) — o checkout recebe só IDs e o "servidor" recalcula o total (anti price-tampering).
 - **Acessibilidade nativa primeiro** — radios reais em `fieldset`, `<dialog>` no sucesso, `aria-live` no carrinho, erro com `role="alert"` + foco; validada com testes axe.
-- **Carrinho persistido** — `zustand/persist` com `skipHydration` + reidratação pós-mount para não quebrar a hidratação SSR.
+- **Carrinho persistido** — `zustand/persist` com `skipHydration` + reidratação pós-mount para não quebrar a hidratação SSR; o storage é validado ao reidratar (item fora do contrato é descartado).
 
 Aprofundamento e trade-offs: [`docs/DECISOES.md`](docs/DECISOES.md).
 
