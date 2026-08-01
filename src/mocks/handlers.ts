@@ -30,8 +30,6 @@ export const offersFixture: Offer[] = [
 
 const isDev = process.env.NODE_ENV === "development";
 
-// Em dev, a flag é controlada por NEXT_PUBLIC_CHECKOUT_V2 (.env.local):
-// "true" liga o checkout V2, "error" simula a API da flag fora do ar.
 const flagEnv = process.env.NEXT_PUBLIC_CHECKOUT_V2;
 
 export const handlers = [
@@ -59,8 +57,6 @@ export const handlers = [
       return HttpResponse.json({ message: "internal error" }, { status: 500 });
     }
 
-    // Preço autoritativo: os IDs são resolvidos no catálogo do "servidor" e
-    // qualquer valor vindo do cliente é ignorado.
     const items = offersFixture.filter((offer) =>
       payload.itemIds?.includes(offer.id),
     );

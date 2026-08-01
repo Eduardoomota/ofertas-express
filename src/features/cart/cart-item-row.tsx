@@ -11,7 +11,6 @@ interface CartItemRowProps {
 }
 
 function allowsMotion(): boolean {
-  // Sem matchMedia (jsdom) ou com reduced motion, a remoção é imediata.
   return (
     typeof window.matchMedia === "function" &&
     !window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -33,7 +32,6 @@ export function CartItemRow({ item, onRemove }: CartItemRowProps) {
       return;
     }
     setIsLeaving(true);
-    // Fallback caso animationend não dispare (ex.: aba em background).
     fallbackRef.current = window.setTimeout(
       () => onRemove(item.id),
       EXIT_FALLBACK_MS,

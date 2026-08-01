@@ -17,11 +17,6 @@ function screenFor(route: string): ReactElement {
   return <OffersList />;
 }
 
-/**
- * Harness de navegação: fornece um App Router fake em que push/replace
- * trocam a tela renderizada, permitindo testar fluxos entre páginas
- * clicando nos links reais da UI.
- */
 function TestApp({ initialRoute }: { initialRoute: string }) {
   const [route, setRoute] = useState(initialRoute);
   const [queryClient] = useState(

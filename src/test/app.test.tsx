@@ -17,13 +17,11 @@ describe("Ofertas Express", () => {
     const user = userEvent.setup();
     renderApp("/");
 
-    // Ofertas carregadas via MSW
     expect(
       await screen.findByRole("heading", { name: "Negocie agora" }),
     ).toBeInTheDocument();
     expect(screen.getByText("R$ 980,00")).toBeInTheDocument();
 
-    // Adiciona duas ofertas; o contador do carrinho reflete a mudança
     await user.click(
       screen.getByRole("button", {
         name: "Adicionar ao carrinho — Negocie agora",
@@ -38,7 +36,6 @@ describe("Ofertas Express", () => {
       screen.getAllByRole("link", { name: "Carrinho, 2 itens" }).length,
     ).toBeGreaterThan(0);
 
-    // Navega para o carrinho pelo header e confere o total
     const [cartLink] = screen.getAllByRole("link", {
       name: "Carrinho, 2 itens",
     });
@@ -48,14 +45,12 @@ describe("Ofertas Express", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("R$ 1.700,00")).toBeInTheDocument();
 
-    // Vai ao checkout e confirma (flag off por padrão nos testes)
     await user.click(screen.getByRole("link", { name: "Ir para o checkout" }));
     expect(
       await screen.findByRole("heading", { name: "Confirmar acordo" }),
     ).toBeInTheDocument();
     await user.click(await screen.findByRole("button", { name: "Confirmar" }));
 
-    // Feedback de sucesso e carrinho limpo
     expect(
       await screen.findByRole("heading", { name: "Acordo confirmado!" }),
     ).toBeInTheDocument();
@@ -63,7 +58,6 @@ describe("Ofertas Express", () => {
   });
 
   it("feature flag: mostra Pix/boleto com a flag ligada e cai no fluxo curto quando a API da flag falha", async () => {
-    // Flag ligada → aparece a escolha de forma de pagamento
     server.use(
       http.get("/api/feature-flags", () =>
         HttpResponse.json<FeatureFlags>({ checkoutV2: true }),
@@ -83,7 +77,6 @@ describe("Ofertas Express", () => {
 
     unmount();
 
-    // API da flag fora do ar → fallback seguro: fluxo curto continua funcionando
     server.use(
       http.get("/api/feature-flags", () =>
         HttpResponse.json({ message: "down" }, { status: 500 }),
@@ -118,7 +111,6 @@ describe("Ofertas Express", () => {
     expect(alert).toHaveTextContent("Não foi possível concluir o acordo");
     await waitFor(() => expect(alert).toHaveFocus());
 
-    // Usuário permanece na tela, com dados preservados e retry possível
     expect(
       screen.getByRole("heading", { name: "Confirmar acordo" }),
     ).toBeInTheDocument();
@@ -137,18 +129,13 @@ describe("Ofertas Express", () => {
     );
     unmount();
 
-    // jsdom não recarrega módulos, então "novo pageload" é simulado zerando a
-    // store em memória. Como o setState também passa pelo persist, o snapshot
-    // do storage é preservado antes e restaurado em seguida.
     const stored = window.localStorage.getItem(CART_STORAGE_KEY);
     useCartStore.setState({ items: [] });
     if (stored) window.localStorage.setItem(CART_STORAGE_KEY, stored);
 
     renderApp("/carrinho");
 
-    // O AppShell reidrata do localStorage ao montar (useRehydrateCart).
     expect(await screen.findByText("Negocie agora")).toBeInTheDocument();
-    // Valor aparece no item e na linha de Total.
     expect(screen.getAllByText("R$ 980,00")).toHaveLength(2);
     expect(
       screen.getByRole("button", { name: "Remover Negocie agora do carrinho" }),
@@ -161,9 +148,9 @@ describe("Ofertas Express", () => {
       JSON.stringify({
         state: {
           items: [
-            offersFixture[1], // válido
-            { ...offersFixture[0], offerAmount: "abc" }, // preço não numérico
-            { title: "sem id", debtAmount: 10, offerAmount: 5 }, // sem id
+            offersFixture[1],
+            { ...offersFixture[0], offerAmount: "abc" },
+            { title: "sem id", debtAmount: 10, offerAmount: 5 },
           ],
         },
         version: 1,
@@ -172,7 +159,6 @@ describe("Ofertas Express", () => {
 
     renderApp("/carrinho");
 
-    // Só o item válido sobrevive; nada de NaN nem crash.
     expect(await screen.findByText("Acordo rápido")).toBeInTheDocument();
     expect(screen.queryByText("Negocie agora")).not.toBeInTheDocument();
     expect(screen.queryByText(/NaN/)).not.toBeInTheDocument();
@@ -180,21 +166,17 @@ describe("Ofertas Express", () => {
   });
 
   it("ignora preço adulterado no cliente: o total confirmado vem do catálogo do servidor", async () => {
-    // Storage/estado adulterado: oferta de R$ 980,00 "virou" R$ 1,00
     useCartStore.setState({
       items: [{ ...offersFixture[0], offerAmount: 1 }],
     });
     const user = userEvent.setup();
     renderApp("/checkout");
 
-    // Antes de confirmar, a UI reflete o valor adulterado do cliente
     expect(await screen.findByText("R$ 1,00")).toBeInTheDocument();
 
     await user.click(await screen.findByRole("button", { name: "Confirmar" }));
     await screen.findByRole("heading", { name: "Acordo confirmado!" });
 
-    // O total confirmado é o recalculado pelo servidor a partir do catálogo —
-    // o preço enviado pelo cliente é ignorado (payload leva só os IDs).
     expect(screen.getByText("R$ 980,00")).toBeInTheDocument();
     expect(screen.queryByText("R$ 1,00")).not.toBeInTheDocument();
   });

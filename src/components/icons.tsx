@@ -17,11 +17,6 @@ import type { SVGProps } from "react";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
-/**
- * Todos os ícones do app são decorativos (o texto/aria-label ao lado carrega
- * o significado), então saem escondidos da árvore de acessibilidade por
- * padrão — consumidores podem sobrescrever via props se precisarem.
- */
 function decorative(Icon: LucideIcon, displayName: string) {
   function DecorativeIcon(props: IconProps) {
     return <Icon aria-hidden="true" focusable="false" {...props} />;
@@ -43,11 +38,6 @@ export const CoinsIcon = decorative(CircleDollarSign, "CoinsIcon");
 export const CheckCircleIcon = decorative(CircleCheck, "CheckCircleIcon");
 export const BoletoIcon = decorative(Barcode, "BoletoIcon");
 
-/**
- * Pix é marca do Banco Central e não existe em bibliotecas de ícones
- * genéricas como o Lucide — aproximação custom no mesmo estilo de traço
- * (stroke 2, cantos arredondados) para não destoar dos demais.
- */
 export function PixIcon(props: IconProps) {
   return (
     <svg

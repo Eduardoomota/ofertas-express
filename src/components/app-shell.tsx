@@ -65,8 +65,6 @@ function Sidebar({ totalItems }: { totalItems: number }) {
     { href: "/carrinho", label: "Carrinho", icon: CartIcon, badge: true },
   ];
 
-  // Itens ilustrativos do mockup, sem destino real — renderizados como texto
-  // não interativo para não enganar teclado e leitores de tela.
   const placeholders = [
     { label: "Histórico", icon: ClockIcon },
     { label: "Perfil", icon: UserIcon },

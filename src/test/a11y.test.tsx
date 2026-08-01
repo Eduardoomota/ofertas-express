@@ -8,8 +8,6 @@ import { offersFixture } from "@/mocks/handlers";
 import { server } from "@/mocks/server";
 import { renderApp } from "./test-utils";
 
-// Smoke test de acessibilidade: o axe no jsdom não computa CSS real,
-// então color-contrast fica de fora (o contraste do tema foi validado à mão).
 const AXE_OPTIONS = {
   rules: {
     "color-contrast": { enabled: false },

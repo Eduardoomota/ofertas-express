@@ -3,8 +3,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState, type ReactNode } from "react";
 
-// Promise única no módulo: o StrictMode monta os efeitos duas vezes em dev
-// e o MSW não aceita um segundo worker.start().
 let mswStart: Promise<unknown> | null = null;
 
 function startMsw(): Promise<unknown> {
@@ -14,10 +12,6 @@ function startMsw(): Promise<unknown> {
   return mswStart;
 }
 
-/**
- * Em desenvolvimento, segura a renderização até o service worker do MSW
- * estar ativo — evita que as primeiras queries escapem do mock.
- */
 function useMswReady(): boolean {
   const [ready, setReady] = useState(process.env.NODE_ENV !== "development");
 

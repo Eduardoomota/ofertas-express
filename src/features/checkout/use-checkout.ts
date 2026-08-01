@@ -7,7 +7,6 @@ export function useCheckout() {
 
   return useMutation({
     mutationFn: postCheckout,
-    // O carrinho só é limpo no sucesso — em erro os dados ficam preservados.
     onSuccess: () => clear(),
   });
 }

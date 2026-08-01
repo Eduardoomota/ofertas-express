@@ -35,8 +35,6 @@ export function OfferCard({ offer }: { offer: Offer }) {
         </div>
       </dl>
 
-      {/* aria-disabled (em vez de disabled) mantém o botão focável, então
-          leitores de tela conseguem encontrar e anunciar o estado. */}
       <Button
         variant="outline"
         className="mt-4 w-full"

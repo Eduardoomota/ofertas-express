@@ -42,11 +42,6 @@ function SummaryRow({ icon: Icon, label, value }: SummaryRowProps) {
 
 const isDev = process.env.NODE_ENV === "development";
 
-/**
- * Enquanto a flag carrega, a área de ação vira skeleton — evita o botão
- * trocar de rótulo ("Confirmar" → "Confirmar pagamento") e a seção de
- * pagamento "pular" na tela quando a flag resolve.
- */
 function ActionAreaSkeleton() {
   return (
     <div className="mt-6">
@@ -79,8 +74,6 @@ export function CheckoutView() {
     if (checkout.isError) errorRef.current?.focus();
   }, [checkout.isError]);
 
-  // Após o sucesso o carrinho é limpo; a contagem vem do payload enviado e o
-  // total exibido é o AUTORITATIVO, recalculado pelo servidor no response.
   const summaryCount = checkout.isSuccess
     ? checkout.variables.itemIds.length
     : items.length;

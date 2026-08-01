@@ -9,10 +9,6 @@ interface SuccessDialogProps {
   orderId: string;
 }
 
-/**
- * <dialog> nativo: showModal() traz focus trap, Esc para fechar e
- * aria-modal sem precisar de biblioteca.
- */
 export function SuccessDialog({ orderId }: SuccessDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
@@ -23,7 +19,6 @@ export function SuccessDialog({ orderId }: SuccessDialogProps) {
     if (typeof dialog.showModal === "function") {
       dialog.showModal();
     } else {
-      // Fallback para ambientes sem suporte a showModal.
       dialog.setAttribute("open", "");
     }
   }, []);

@@ -16,7 +16,6 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  // URL absoluta para funcionar tanto no navegador quanto no fetch do Node (testes).
   const base =
     typeof window !== "undefined" ? window.location.origin : "http://localhost";
   const response = await fetch(new URL(path, base), init);
@@ -32,10 +31,6 @@ export function getOffers(): Promise<Offer[]> {
   return request<Offer[]>("/api/offers");
 }
 
-/**
- * Normalização defensiva: qualquer payload que não tenha `checkoutV2: boolean`
- * é tratado como flag desligada (fallback seguro).
- */
 export function normalizeFeatureFlags(data: unknown): FeatureFlags {
   if (typeof data === "object" && data !== null && "checkoutV2" in data) {
     const value = (data as Record<string, unknown>).checkoutV2;

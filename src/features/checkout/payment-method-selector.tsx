@@ -28,8 +28,6 @@ function PaymentOption({
 }: PaymentOptionProps) {
   return (
     <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-slate-200 bg-white p-4 shadow-sm transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-tint/10 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary motion-reduce:transition-none">
-      {/* Radio nativo (sr-only): estado, nome no grupo e navegação por setas
-          vêm de graça do próprio navegador. */}
       <input
         type="radio"
         name="payment-method"
