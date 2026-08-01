@@ -59,9 +59,22 @@ export const handlers = [
       return HttpResponse.json({ message: "internal error" }, { status: 500 });
     }
 
+    // Preço autoritativo: os IDs são resolvidos no catálogo do "servidor" e
+    // qualquer valor vindo do cliente é ignorado.
+    const items = offersFixture.filter((offer) =>
+      payload.itemIds?.includes(offer.id),
+    );
+
+    if (items.length === 0) {
+      return HttpResponse.json({ message: "invalid items" }, { status: 400 });
+    }
+
+    const totalAmount = items.reduce((sum, item) => sum + item.offerAmount, 0);
+
     return HttpResponse.json<CheckoutResponse>({
-      orderId: `ACD-${payload.items.length}-${payload.totalAmount}`,
+      orderId: `ACD-${items.length}-${totalAmount}`,
       status: "confirmed",
+      totalAmount,
     });
   }),
 ];

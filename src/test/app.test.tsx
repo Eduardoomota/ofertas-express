@@ -154,4 +154,48 @@ describe("Ofertas Express", () => {
       screen.getByRole("button", { name: "Remover Negocie agora do carrinho" }),
     ).toBeInTheDocument();
   });
+
+  it("descarta itens inválidos do storage na reidratação (storage adulterado)", async () => {
+    window.localStorage.setItem(
+      CART_STORAGE_KEY,
+      JSON.stringify({
+        state: {
+          items: [
+            offersFixture[1], // válido
+            { ...offersFixture[0], offerAmount: "abc" }, // preço não numérico
+            { title: "sem id", debtAmount: 10, offerAmount: 5 }, // sem id
+          ],
+        },
+        version: 1,
+      }),
+    );
+
+    renderApp("/carrinho");
+
+    // Só o item válido sobrevive; nada de NaN nem crash.
+    expect(await screen.findByText("Acordo rápido")).toBeInTheDocument();
+    expect(screen.queryByText("Negocie agora")).not.toBeInTheDocument();
+    expect(screen.queryByText(/NaN/)).not.toBeInTheDocument();
+    expect(useCartStore.getState().items).toHaveLength(1);
+  });
+
+  it("ignora preço adulterado no cliente: o total confirmado vem do catálogo do servidor", async () => {
+    // Storage/estado adulterado: oferta de R$ 980,00 "virou" R$ 1,00
+    useCartStore.setState({
+      items: [{ ...offersFixture[0], offerAmount: 1 }],
+    });
+    const user = userEvent.setup();
+    renderApp("/checkout");
+
+    // Antes de confirmar, a UI reflete o valor adulterado do cliente
+    expect(await screen.findByText("R$ 1,00")).toBeInTheDocument();
+
+    await user.click(await screen.findByRole("button", { name: "Confirmar" }));
+    await screen.findByRole("heading", { name: "Acordo confirmado!" });
+
+    // O total confirmado é o recalculado pelo servidor a partir do catálogo —
+    // o preço enviado pelo cliente é ignorado (payload leva só os IDs).
+    expect(screen.getByText("R$ 980,00")).toBeInTheDocument();
+    expect(screen.queryByText("R$ 1,00")).not.toBeInTheDocument();
+  });
 });

@@ -79,10 +79,14 @@ export function CheckoutView() {
     if (checkout.isError) errorRef.current?.focus();
   }, [checkout.isError]);
 
-  // Após o sucesso o carrinho é limpo; o resumo passa a vir do payload enviado.
-  const submitted = checkout.isSuccess ? checkout.variables : null;
-  const summaryCount = submitted ? submitted.items.length : items.length;
-  const summaryTotal = submitted ? submitted.totalAmount : totalAmount;
+  // Após o sucesso o carrinho é limpo; a contagem vem do payload enviado e o
+  // total exibido é o AUTORITATIVO, recalculado pelo servidor no response.
+  const summaryCount = checkout.isSuccess
+    ? checkout.variables.itemIds.length
+    : items.length;
+  const summaryTotal = checkout.isSuccess
+    ? checkout.data.totalAmount
+    : totalAmount;
 
   if (items.length === 0 && !checkout.isSuccess) {
     return (
@@ -109,12 +113,7 @@ export function CheckoutView() {
 
   const handleConfirm = () => {
     checkout.mutate({
-      items: items.map(({ id, title, offerAmount }) => ({
-        id,
-        title,
-        offerAmount,
-      })),
-      totalAmount,
+      itemIds: items.map((item) => item.id),
       ...(checkoutV2 ? { paymentMethod } : {}),
       ...(simulateError ? { simulateError: true } : {}),
     });

@@ -12,11 +12,12 @@ export interface FeatureFlags {
 
 export type PaymentMethod = "pix" | "boleto";
 
-export type CheckoutItem = Pick<Offer, "id" | "title" | "offerAmount">;
-
+/**
+ * O cliente envia apenas os IDs: preço é responsabilidade do servidor, que
+ * resolve os itens no catálogo e recalcula o total (anti price-tampering).
+ */
 export interface CheckoutPayload {
-  items: CheckoutItem[];
-  totalAmount: number;
+  itemIds: Array<Offer["id"]>;
   paymentMethod?: PaymentMethod;
   /** Somente em dev: força o handler do MSW a responder 500. */
   simulateError?: boolean;
@@ -25,4 +26,6 @@ export interface CheckoutPayload {
 export interface CheckoutResponse {
   orderId: string;
   status: "confirmed";
+  /** Total autoritativo, recalculado pelo servidor a partir do catálogo. */
+  totalAmount: number;
 }
