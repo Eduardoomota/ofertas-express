@@ -24,7 +24,7 @@ describe("acessibilidade (axe)", () => {
 
   it("carrinho com itens não tem violações", async () => {
     useCartStore.setState({ items: offersFixture.slice(0, 2) });
-    const { container } = renderApp("/carrinho");
+    const { container } = renderApp("/cart");
     await screen.findByRole("heading", { name: "Seu carrinho" });
 
     expect(await axe(container, AXE_OPTIONS)).toHaveNoViolations();

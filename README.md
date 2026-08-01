@@ -36,14 +36,14 @@ Para ver o erro 500 do checkout, marque **"Simular falha da API"** na própria t
 - **Acessibilidade nativa primeiro** — radios reais em `fieldset`, `<dialog>` no sucesso, `aria-live` no carrinho, erro com `role="alert"` + foco; validada com testes axe.
 - **Carrinho persistido** — `zustand/persist` com `skipHydration` + reidratação pós-mount para não quebrar a hidratação SSR; o storage é validado ao reidratar (item fora do contrato é descartado).
 
-Aprofundamento e trade-offs: [`docs/DECISOES.md`](docs/DECISOES.md).
+Aprofundamento e trade-offs: [`docs/DECISIONS.md`](docs/DECISIONS.md).
 
 ## Estrutura
 
 ```
 src/
-  app/        # rotas (/, /carrinho, /checkout) + providers
-  components/ # AppShell, UI básica, ícones (lucide + Pix custom)
+  app/        # rotas (/, /cart, /checkout) + providers
+  components/ # layout/ (AppShell, Sidebar…), ui/, icons/ (lucide + Pix custom) — 1 componente por arquivo
   features/   # offers/ · cart/ · checkout/ (componentes, hooks e store por domínio)
   lib/        # contrato da API, fetchers, formatação BRL
   mocks/      # handlers MSW compartilhados

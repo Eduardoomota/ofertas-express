@@ -133,7 +133,7 @@ describe("Ofertas Express", () => {
     useCartStore.setState({ items: [] });
     if (stored) window.localStorage.setItem(CART_STORAGE_KEY, stored);
 
-    renderApp("/carrinho");
+    renderApp("/cart");
 
     expect(await screen.findByText("Negocie agora")).toBeInTheDocument();
     expect(screen.getAllByText("R$ 980,00")).toHaveLength(2);
@@ -157,7 +157,7 @@ describe("Ofertas Express", () => {
       }),
     );
 
-    renderApp("/carrinho");
+    renderApp("/cart");
 
     expect(await screen.findByText("Acordo rápido")).toBeInTheDocument();
     expect(screen.queryByText("Negocie agora")).not.toBeInTheDocument();

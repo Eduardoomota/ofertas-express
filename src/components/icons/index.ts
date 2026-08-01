@@ -1,0 +1,13 @@
+export { ArrowLeftIcon } from "./arrow-left-icon";
+export { BoletoIcon } from "./boleto-icon";
+export { CalendarCheckIcon } from "./calendar-check-icon";
+export { CartIcon } from "./cart-icon";
+export { CheckCircleIcon } from "./check-circle-icon";
+export { ClockIcon } from "./clock-icon";
+export { CoinsIcon } from "./coins-icon";
+export { FileIcon } from "./file-icon";
+export { LogOutIcon } from "./log-out-icon";
+export { PixIcon } from "./pix-icon";
+export { TagIcon } from "./tag-icon";
+export { TrashIcon } from "./trash-icon";
+export { UserIcon } from "./user-icon";

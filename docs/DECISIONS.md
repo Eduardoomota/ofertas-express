@@ -59,7 +59,7 @@ persist(creator, {
 | Feedback do carrinho   | região `aria-live="polite"` alimentada pela store                                         | anúncio sem roubar foco             |
 | Botão "Adicionado"     | `aria-disabled` + guarda no onClick                                                       | continua focável e anunciável       |
 
-Mais: um `h1` por página (na home é `sr-only`); skip link; `focus-visible` global; alvos ≥ 44px; nomes com contexto ("Remover Negocie agora do carrinho", "Carrinho, 2 itens" — o sufixo `sr-only` nos botões de adicionar mantém a regra label-in-name); itens decorativos da sidebar são `<span>` não interativos; `prefers-reduced-motion` global e por utilitário (`motion-safe:`). Ícones via lucide-react atrás de `components/icons.tsx`, que aplica `aria-hidden` por padrão (Pix é custom: marca do Banco Central, não existe em libs genéricas).
+Mais: um `h1` por página (na home é `sr-only`); skip link; `focus-visible` global; alvos ≥ 44px; nomes com contexto ("Remover Negocie agora do carrinho", "Carrinho, 2 itens" — o sufixo `sr-only` nos botões de adicionar mantém a regra label-in-name); itens decorativos da sidebar são `<span>` não interativos; `prefers-reduced-motion` global e por utilitário (`motion-safe:`). Ícones via lucide-react atrás de `components/icons/` (um componente por arquivo, barrel no `index.ts`, factory `decorative` aplicando `aria-hidden` por padrão; Pix é custom: marca do Banco Central, não existe em libs genéricas).
 
 ## 8. Animações do carrinho
 

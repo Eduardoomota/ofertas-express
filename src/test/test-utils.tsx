@@ -6,13 +6,13 @@ import {
 } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { PathnameContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 import { useMemo, useState, type ReactElement } from "react";
-import { AppShell } from "@/components/app-shell";
+import { AppShell } from "@/components/layout/app-shell";
 import { CartView } from "@/features/cart/cart-view";
 import { CheckoutView } from "@/features/checkout/checkout-view";
 import { OffersList } from "@/features/offers/offers-list";
 
 function screenFor(route: string): ReactElement {
-  if (route.startsWith("/carrinho")) return <CartView />;
+  if (route.startsWith("/cart")) return <CartView />;
   if (route.startsWith("/checkout")) return <CheckoutView />;
   return <OffersList />;
 }
