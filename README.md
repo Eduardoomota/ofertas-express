@@ -47,9 +47,3 @@ src/
   mocks/      # handlers MSW compartilhados
   test/       # setup, harness de navegação e testes
 ```
-
-## O que eu faria com mais tempo
-
-- E2E com Playwright em navegador real (contraste e teclado de verdade).
-- Sincronização do carrinho entre abas (evento `storage`).
-- Quantidade por item e histórico real de acordos.
